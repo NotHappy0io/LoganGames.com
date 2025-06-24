@@ -6,7 +6,7 @@ if not st.session_state['authentication_status']:
     st.error("You need to log in to play the game. Please log in first.")
     st.stop()  # Stop further execution if not logged in
 
-st.image("pics\847809488_preview_vault2.png")
+st.image("https://images.steamusercontent.com/ugc/817811809131992672/486B84A070E18FD5B42C13706D9CEAAC1767B6B1/")
 # make it ask you a random riddle from a list of riddles
 #         position: absolute;
 #         top: 10px; 
