@@ -8,6 +8,11 @@ CHARGE_PER_CLICK = 5 # How much battery a single click adds
 DISCHARGE_RATE = 1   # How many percentage points per "tick"
 DISCHARGE_INTERVAL = 0.5 # How often (in seconds) the battery discharges
 
+if not st.session_state['authentication_status']:
+    # show a message if the user is not logged in
+    st.error("You need to log in to play the game. Please log in first.")
+    st.stop()  # Stop further execution if not logged in
+    
 # --- Session State Initialization ---
 # This ensures variables persist across reruns
 if 'battery_level' not in st.session_state:

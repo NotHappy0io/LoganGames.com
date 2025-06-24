@@ -1,0 +1,50 @@
+cookie:
+  expiry_days: 30
+  key: some_signature_key
+  name: some_cookie_name
+credentials:
+  usernames:
+    nothappy.io:
+      email: logan.jiming.li@gmail.com
+      failed_login_attempts: 0
+      first_name: Logan
+      last_name: Li
+      logged_in: false
+      password: $2b$12$tpEATzpqC9KqOHJ8aq3kQuTmoALflB2T7hJLE1DXg8jrCsykgNYnS
+      roles: admin
+    rbriggs:
+      email: rbriggs@gmail.com
+      failed_login_attempts: 0
+      first_name: Rebecca
+      last_name: Briggs
+      logged_in: false
+      password: $2b$12$EF1DgNWDrlxXQLfCynhViOAxtR44uoUepxQHM1B5jXj8eM6kvjM7K
+      roles:
+      - viewer
+    wef:
+      email: jajaja@gmail.com
+      first_name: Logan
+      last_name: li
+      logged_in: false
+      password: $2b$12$q1eGmPVtUhZL57gs.ugn.OsQtr6QE2/4TDTIDd09UkPExI2ba4WFy
+      roles: null
+    wef2:
+      email: jajaja2@gmail.com
+      first_name: Logan
+      last_name: li
+      logged_in: false
+      password: $2b$12$tCwA5f0rX3S01OvMTUFtgOMhFSmN4esEQzsx4KUeDpOuHvD4XO9Sy
+      roles: null
+oauth2:
+  google:
+    client_id: null
+    client_secret: null
+    redirect_uri: null
+  microsoft:
+    client_id: null
+    client_secret: null
+    redirect_uri: null
+    tenant_id: null
+pre-authorized:
+  emails:
+  - melsby@gmail.com

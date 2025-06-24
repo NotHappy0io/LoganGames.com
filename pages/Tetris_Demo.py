@@ -7,6 +7,11 @@ BOARD_WIDTH = 10
 BOARD_HEIGHT = 20
 BLOCK_SIZE_PX = 25 # Size of each block in pixels (e.g., 25x25px)
 
+if not st.session_state['authentication_status']:
+    # show a message if the user is not logged in
+    st.error("You need to log in to play the game. Please log in first.")
+    st.stop()  # Stop further execution if not logged in
+
 # --- Tetromino Colors (Standard AWT colors) ---
 # Use these strings as keys/values in your game board's cell state
 TETROMINO_COLORS = {

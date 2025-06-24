@@ -1,10 +1,28 @@
 import streamlit as st
+import streamlit_authenticator as stauth
+
 
 st.set_page_config(
     page_title="My Awesome App",
     page_icon="🎮",
     layout="centered"
 )
+
+import yaml
+from yaml.loader import SafeLoader
+
+# Pre-hashing all plain text passwords once
+# Hasher.hash_passwords(config['credentials'])
+
+with open('config.yaml') as file:
+    config = yaml.load(file, Loader=SafeLoader)
+authenticator = stauth.Authenticate(
+    config['credentials'],
+    config['cookie']['name'],
+    config['cookie']['key'],
+    config['cookie']['expiry_days']
+)
+
 
 st.title("Welcome to the App! 🎮")
 st.write("Navigate to the Phone Charging Game using the sidebar.")
@@ -17,46 +35,57 @@ st.write("""
 - More features coming soon...
 """)
 
-# --- Sidebar Content ---
-# Everything inside this 'with' block will be in the sidebar
-with st.sidebar:
-    st.header("Sidebar Controls and Info")
-    st.write("Use the elements below to interact with the app or find information.")
+# Lets create a login menu:
 
-    # A selectbox widget
-    option = st.selectbox(
-        "Choose a theme!", # Corrected "an theme" to "a theme"
-        ("2D", "3D", "IDLE")
-    )
-    # You could use the 'option' variable later to conditionally display content
-    # or change game aspects based on the selected theme.
 
-    # A checkbox
-    agree = st.checkbox("I agree to the terms and conditions")
-    # You might want to add logic here, e.g., if not agree, disable certain features
+try:
+    authenticator.login()
+except Exception as e:
+    st.error(e)
 
-    # A text input
-    user_name = st.text_input("Enter your name", "Guest")
-    st.write(f"Hello, {user_name}!")
+# try:
+#     authenticator.experimental_guest_login('Login with Google',
+#                                            provider='google',
+#                                            oauth2=config['oauth2'])
+#     authenticator.experimental_guest_login('Login with Microsoft',
+#                                            provider='microsoft',
+#                                            oauth2=config['oauth2'])
+# except Exception as e:
+#     st.error(e)
 
-    # A button
-    if st.button("Don't know what to play? Click me!"): # Corrected "Dont" to "Don't"
-        st.success("Placeholder for a game or action!")
-        # Here, you could potentially use st.switch_page("pages/game_page.py")
-        # to navigate the user directly to a game, but it might feel abrupt.
-        # Often, this button would trigger a random game suggestion or similar.
 
-    # An image in the sidebar
-    st.image("https://via.placeholder.com/150?text=Sidebar+Image", caption="A little image")
+if st.session_state['authentication_status']:
+    authenticator.logout()
+    st.write(f'Welcome *{st.session_state["name"]}*')
+elif st.session_state['authentication_status'] is False:
+    st.error('Username/password is incorrect')
+elif st.session_state['authentication_status'] is None:
+    st.warning('Please enter your username and password')
 
-    # Some static text
-    st.write("Developed with ❤️ using Streamlit.")
-    # You can update the time dynamically using Python's datetime module:
-    current_time = st.session_state.get('current_time', '') # Initialize if not exists
-    st.write(f"Current time: {current_time}")
 
-    # To update the time dynamically, you'd typically need to trigger a rerun.
-    # For a simple display, this is fine. For live updates, you'd need a loop
-    # with st.rerun() like in your game page, but that's usually overkill for static info.
+# create a button to show the registration form
+if st.button('Register a new user'):
+    # Toggle the registration form visibility
+    if 'show_registration_form' not in st.session_state:
+        st.session_state['show_registration_form'] = True
+    else:
+        st.session_state['show_registration_form'] = not st.session_state['show_registration_form']
 
-# Ensure your 'pages' folder and 'game_page.py' are set up correctly as before.
+# Conditionally show the registration part
+if st.session_state.get('show_registration_form', False):
+    try:
+        email_of_registered_user, \
+        username_of_registered_user, \
+        name_of_registered_user = authenticator.register_user(
+            pre_authorized=config['pre-authorized']['emails']
+        )
+        if email_of_registered_user:
+            st.success('User registered successfully')
+            # Optionally, hide the form after successful registration
+            st.session_state['show_registration_form'] = False
+            # You might also want to save the updated config here
+            with open('config.yaml', 'w') as file:
+                yaml.dump(config, file, default_flow_style=False)
+            st.rerun() # Rerun to update the app with the new user in config
+    except Exception as e:
+        st.error(e)
